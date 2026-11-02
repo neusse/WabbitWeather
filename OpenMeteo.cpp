@@ -14,40 +14,6 @@
 static const char *OM_HOST = "api.open-meteo.com";
 
 /***************************************************************************************
-** Function name:           isoToUnix
-** Description:             Convert "YYYY-MM-DDTHH:MM" or "YYYY-MM-DD" to unix time.
-**                          Open-Meteo does not include seconds or timezone suffix in
-**                          its time strings; the returned value is UTC epoch seconds.
-**                          Uses a simple integer-math approach (no mktime) so it works
-**                          without POSIX libc support on the ESP32 Arduino framework.
-***************************************************************************************/
-uint32_t OW_Weather::isoToUnix(const String &iso) {
-  if (iso.length() < 10) return 0;
-
-  int year = iso.substring(0, 4).toInt();
-  int month = iso.substring(5, 7).toInt();
-  int day = iso.substring(8, 10).toInt();
-  int hour = 0, minute = 0;
-  if (iso.length() >= 16) {
-    hour = iso.substring(11, 13).toInt();
-    minute = iso.substring(14, 16).toInt();
-  }
-
-  if (month < 3) {
-    year--;
-    month += 12;
-  }
-  long A = year / 100;
-  long B = 2 - A + A / 4;
-  long jd = (long)(365.25 * (year + 4716))
-            + (long)(30.6001 * (month + 1))
-            + day + B - 1524;
-  long days = jd - 2440588;
-
-  return (uint32_t)(days * 86400UL + hour * 3600UL + minute * 60UL);
-}
-
-/***************************************************************************************
 ** Function name:           getForecast
 ** Description:             Build the Open-Meteo URL and kick off the parse.
 ***************************************************************************************/
@@ -101,7 +67,8 @@ bool OW_Weather::getForecast(OW_current *current, OW_hourly *hourly, OW_daily *d
   url += OM_HOST;
   url += "/v1/forecast?latitude=" + latitude;
   url += "&longitude=" + longitude;
-  url += "&timezone=auto";
+  url += "&timezone=auto";    // daily max/min etc. are for the location's own days
+  url += "&timeformat=unixtime";  // times as real UTC, shown with toLocal() (its own local time can have stale DST rules)
   url += "&temperature_unit=" + temp_unit;
   url += "&wind_speed_unit=" + wind_unit;
   url += "&forecast_days=8";
@@ -419,7 +386,7 @@ void OW_Weather::fullDataSet(const char *val) {
 
   // ── current (a flat object, not an array) ──────────────────────────────
   if (currentSection == "current" && current) {
-    if (currentKey == "time") current->dt = isoToUnix(value);
+    if (currentKey == "time") current->dt = value.toInt();
     else if (currentKey == "temperature_2m") current->temp = value.toFloat();
     else if (currentKey == "apparent_temperature") current->feels_like = value.toFloat();
     else if (currentKey == "relative_humidity_2m") current->humidity = value.toInt();
@@ -451,7 +418,7 @@ void OW_Weather::fullDataSet(const char *val) {
       return;
     }
 
-    if (currentKey == "time") hourly->dt[arrayIndex] = isoToUnix(value);
+    if (currentKey == "time") hourly->dt[arrayIndex] = value.toInt();
     else if (currentKey == "temperature_2m") hourly->temp[arrayIndex] = value.toFloat();
     else if (currentKey == "apparent_temperature") hourly->feels_like[arrayIndex] = value.toFloat();
     else if (currentKey == "relative_humidity_2m") hourly->humidity[arrayIndex] = value.toInt();
@@ -488,9 +455,9 @@ void OW_Weather::fullDataSet(const char *val) {
       return;
     }
 
-    if (currentKey == "time") daily->dt[arrayIndex] = isoToUnix(value);
-    else if (currentKey == "sunrise") daily->sunrise[arrayIndex] = isoToUnix(value);
-    else if (currentKey == "sunset") daily->sunset[arrayIndex] = isoToUnix(value);
+    if (currentKey == "time") daily->dt[arrayIndex] = value.toInt();
+    else if (currentKey == "sunrise") daily->sunrise[arrayIndex] = value.toInt();
+    else if (currentKey == "sunset") daily->sunset[arrayIndex] = value.toInt();
     else if (currentKey == "temperature_2m_max") daily->temp_max[arrayIndex] = value.toFloat();
     else if (currentKey == "temperature_2m_min") daily->temp_min[arrayIndex] = value.toFloat();
     else if (currentKey == "apparent_temperature_max") daily->feels_like_day[arrayIndex] = value.toFloat();
@@ -537,7 +504,7 @@ void OW_Weather::partialDataSet(const char *val) {
 
   // ── current (partial) ──────────────────────────────────────────────────
   if (currentSection == "current" && current) {
-    if (currentKey == "time") current->dt = isoToUnix(value);
+    if (currentKey == "time") current->dt = value.toInt();
     else if (currentKey == "temperature_2m") current->temp = value.toFloat();
     else if (currentKey == "relative_humidity_2m") current->humidity = value.toInt();
     else if (currentKey == "surface_pressure") current->pressure = value.toFloat();
@@ -561,7 +528,7 @@ void OW_Weather::partialDataSet(const char *val) {
       return;
     }
 
-    if (currentKey == "time") daily->dt[arrayIndex] = isoToUnix(value);
+    if (currentKey == "time") daily->dt[arrayIndex] = value.toInt();
     else if (currentKey == "temperature_2m_max") daily->temp_max[arrayIndex] = value.toFloat();
     else if (currentKey == "temperature_2m_min") daily->temp_min[arrayIndex] = value.toFloat();
     else if (currentKey == "weather_code") {

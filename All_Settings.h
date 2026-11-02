@@ -53,6 +53,10 @@ String longitude = "-123.1037";
 
 int32_t tzOffset = -25200;  // seconds east of UTC (-25200 = UTC-7); updated at 2am and on Save
 
+// Override on the web page: used instead of tzOffset when the service's offset is wrong
+bool    tzOverride       = false;
+int32_t tzOverrideOffset = -25200;
+
 /***************************************************************************************
 **                          Alternate location
 ***************************************************************************************/
@@ -63,6 +67,10 @@ String longitude2 = "-123.1037";
 
 // Timezone offset for the alternate location.
 int32_t tzOffset2 = -25200;
+
+// Override for the alternate location, same as above
+bool    tzOverride2       = false;
+int32_t tzOverrideOffset2 = -25200;
 
 // City name cache — populated by Nominatim, not editable directly
 String theCityLocation  = "Unknown";

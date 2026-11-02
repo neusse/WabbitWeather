@@ -23,6 +23,10 @@ extern int32_t tzOffset;
 extern String latitude2;
 extern String longitude2;
 extern int32_t tzOffset2;
+extern bool tzOverride;
+extern bool tzOverride2;
+extern int32_t tzOverrideOffset;
+extern int32_t tzOverrideOffset2;
 extern String locationName;
 extern String locationName2;
 extern String theCityLocation;
@@ -94,6 +98,10 @@ void loadConfig() {
     else if (key == "latitude2") latitude2 = value;
     else if (key == "longitude2") longitude2 = value;
     else if (key == "tzOffset2") tzOffset2 = value.toInt();
+    else if (key == "tzOverride") tzOverride = (value == "true");
+    else if (key == "tzOverride2") tzOverride2 = (value == "true");
+    else if (key == "tzOverrideOffset") tzOverrideOffset = value.toInt();
+    else if (key == "tzOverrideOffset2") tzOverrideOffset2 = value.toInt();
     else if (key == "locationName") locationName = value;
     else if (key == "locationName2") locationName2 = value;
     else if (key == "show24Hour") show24Hour = (value == "true");
@@ -139,6 +147,10 @@ void saveConfig() {
   f.println("latitude2=" + latitude2);
   f.println("longitude2=" + longitude2);
   f.println("tzOffset2=" + String(tzOffset2));
+  f.println("tzOverride=" + String(tzOverride ? "true" : "false"));
+  f.println("tzOverride2=" + String(tzOverride2 ? "true" : "false"));
+  f.println("tzOverrideOffset=" + String(tzOverrideOffset));
+  f.println("tzOverrideOffset2=" + String(tzOverrideOffset2));
   f.println("locationName=" + locationName);
   f.println("locationName2=" + locationName2);
   f.println("show24Hour=" + String(show24Hour ? "true" : "false"));
@@ -195,6 +207,45 @@ static String locationNameRow(uint8_t slot, const String& typed, const String& l
   return "<div class='row'><label>TZ" + n + " " + String(wcLocName) + "</label>"
          "<input type='text' id='name" + n + "' name='locationName" + (slot == 1 ? "" : n) + "'"
          " value='" + htmlAttr(value) + "' maxlength='26'></div>";
+}
+
+// Every UTC offset in use, in minutes, for the override dropdown
+static const int16_t TZ_CHOICES[] = {
+  -720, -660, -600, -570, -540, -480, -420, -360, -300, -240, -210, -180, -150, -120, -60,
+  0, 60, 120, 180, 210, 240, 270, 300, 330, 345, 360, 390, 420, 480, 525, 540, 570,
+  600, 630, 660, 720, 765, 780, 825, 840
+};
+static const uint8_t TZ_CHOICE_COUNT = sizeof(TZ_CHOICES) / sizeof(TZ_CHOICES[0]);
+
+// "UTC−8" or "UTC+5:30"; full always shows the minutes ("UTC−8:00")
+static String utcLabel(int32_t secs, bool full) {
+  int32_t mins = abs(secs) / 60;
+  String s = String("UTC") + (secs < 0 ? "&minus;" : "+") + String(mins / 60);
+  if (full || mins % 60) s += (mins % 60 < 10 ? ":0" : ":") + String(mins % 60);
+  return s;
+}
+
+// One override row: "TZ1 time zone override  [x] [UTC−7:00 ▼]", the service's offset below.
+// Box off: the list starts at the received offset, so it's one step up or down to fix.
+static String tzOverrideRow(uint8_t slot, bool on, int32_t offset, int32_t received) {
+  String n = String(slot);
+  String sfx = slot == 1 ? "" : n;  // config names: tzOverride, tzOverride2
+  int32_t shown = on ? offset : received;
+  String html = "<div class='row'><label>TZ" + n + " " + String(wcTzOverride) + "</label><div>"
+                "<div style='display:flex;align-items:center;gap:10px'>"
+                "<label class='toggle' style='width:auto'><input type='checkbox' id='ov" + n + "' name='tzOverride" + sfx + "'"
+                + (on ? " checked" : "") + "><span class='slider'></span></label>"
+                "<select id='ovs" + n + "' name='tzOverrideOffset" + sfx + "'>";
+  for (uint8_t i = 0; i < TZ_CHOICE_COUNT; i++) {
+    int32_t secs = TZ_CHOICES[i] * 60;
+    html += "<option value='" + String(secs) + "'" + (secs == shown ? " selected" : "") + ">"
+            + utcLabel(secs, true) + "</option>";
+  }
+  html += "</select></div>"
+          "<div style='font-size:11px;color:var(--muted);margin-top:4px'>" + String(wcTzReceived)
+          + ": <span id='r" + n + "'>" + utcLabel(received, false) + "</span></div>"
+          "</div></div>";
+  return html;
 }
 
 static String colourSelect(const String& name, uint32_t currentValue) {
@@ -270,7 +321,14 @@ static String section(const String& title) {
 // Full page HTML
 // ===========================================================================
 
-static String buildPage(bool saved = false) {
+// Sends what's built so far and empties it, keeping its memory for the next part
+static void sendPart(String& html) {
+  server.sendContent(html);
+  html = "";
+}
+
+// Sent in parts: the whole page (~70 KB) can be too big for one String, which then silently drops text
+static void sendPage(bool saved = false) {
   String ip = WiFi.localIP().toString();
 
   String html = F("<!DOCTYPE html><html lang='en'><head>"
@@ -293,8 +351,6 @@ static String buildPage(bool saved = false) {
                   "border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer}"
                   ".wreset:hover{background:rgba(239,83,80,0.12)}"
                   "main{max-width:700px;margin:0 auto;padding:20px 16px 50px}"
-                  ".saved{background:#1b3a1b;border:1px solid #4caf50;color:#81c784;border-radius:8px;"
-                  "padding:10px 16px;margin-bottom:16px;font-size:14px}"
                   "h2{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;"
                   "color:var(--accent);margin:28px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--bdr)}"
                   ".card{background:var(--card);border:1px solid var(--bdr);border-radius:10px;"
@@ -303,7 +359,9 @@ static String buildPage(bool saved = false) {
                   ".row>label:first-child{font-size:14px;flex:1;min-width:150px}"
                   "input[type=text],input[type=number]{background:#1a1a1a;border:1px solid var(--bdr);"
                   "border-radius:6px;color:var(--txt);font-size:14px;padding:7px 10px;width:100%;max-width:210px}"
-                  "input:focus{outline:none;border-color:var(--accent)}"
+                  "select{background:#1a1a1a;border:1px solid var(--bdr);border-radius:6px;"
+                  "color:var(--txt);font-size:14px;padding:7px 10px}"
+                  "input:focus,select:focus{outline:none;border-color:var(--accent)}"
                   ".rg{display:flex;gap:8px}"
                   ".rg label{display:flex;align-items:center;gap:6px;background:#1a1a1a;"
                   "border:1px solid var(--bdr);border-radius:6px;padding:6px 14px;cursor:pointer;"
@@ -358,6 +416,8 @@ static String buildPage(bool saved = false) {
                   ".modal h3{color:var(--danger);margin-bottom:12px;font-size:17px}"
                   ".modal p{color:var(--muted);font-size:14px;margin-bottom:20px;line-height:1.5}"
                   ".mbtns{display:flex;gap:10px;justify-content:center}"
+                  ".modal.okm{border-color:#4caf50;cursor:pointer}.modal.okm h3{color:#81c784;margin-bottom:20px}"
+                  ".mok.okb{background:#4caf50}"
                   ".mok{background:var(--danger);border:none;color:#fff;padding:9px 22px;"
                   "border-radius:7px;font-size:14px;font-weight:600;cursor:pointer}"
                   ".mno{background:transparent;border:1px solid var(--muted);color:var(--muted);"
@@ -397,11 +457,18 @@ static String buildPage(bool saved = false) {
 
   html += "<main>";
 
-  if (saved) html += "<div class='saved'>" + String(wcSaved) + "</div>";
+  // Saved popup: a click anywhere closes it. The ?saved=1 comes off the address, so Cancel
+  // (a reload) or a later refresh doesn't show it again.
+  if (saved) html += "<div class='mbg open' onclick='this.classList.remove(\"open\")'>"
+                     "<div class='modal okm'><h3>" + String(wcSaved) + "</h3>"
+                     "<div class='mbtns'><button type='button' class='mok okb'>" + String(wcOkBtn) + "</button></div>"
+                     "</div></div>"
+                     "<script>history.replaceState(null,'','/');</script>";
 
   html += "<form method='POST' action='/save'>";
 
   // ── Location ───────────────────────────────────────────────────────────────
+  sendPart(html);
   html += section(wcSecLocation);
   html += "<div class='card'>";
   html += "<div id='map'></div>";
@@ -444,9 +511,14 @@ static String buildPage(bool saved = false) {
   // Optional names for the display, instead of the map's town name
   html += locationNameRow(1, locationName, theCityLocation);
   html += locationNameRow(2, locationName2, theCityLocation2);
+
+  // Fixed offsets for when the service's is wrong (e.g. a place that dropped DST)
+  html += tzOverrideRow(1, tzOverride,  tzOverrideOffset,  tzOffset);
+  html += tzOverrideRow(2, tzOverride2, tzOverrideOffset2, tzOffset2);
   html += "</div>";  // end location card
 
   // ── Display ────────────────────────────────────────────────────────────────
+  sendPart(html);
   html += section(wcSecDisplay);
   html += "<div class='card'>";
   html += "<div class='row'><label>" + String(wcUnitsLabel) + "</label>"
@@ -487,6 +559,7 @@ static String buildPage(bool saved = false) {
   html += "</div>";
 
   // ── Temperature colours ────────────────────────────────────────────────────
+  sendPart(html);
   html += section(wcSecTempColours);
   html += "<div class='card'>";
   html += "<div class='row'><label>" + String(wcHighTempThresh) + "</label>"
@@ -499,6 +572,7 @@ static String buildPage(bool saved = false) {
   html += "</div>";
 
   // ── Precipitation colours ──────────────────────────────────────────────────
+  sendPart(html);
   html += section(wcSecPrecipColours);
   html += "<div class='card'>";
   html += "<div class='row'><label>" + String(wcHighPrecipThresh) + "</label>"
@@ -517,6 +591,8 @@ static String buildPage(bool saved = false) {
           "</div>";
 
   html += "</form>";
+
+  sendPart(html);
 
   // ── Map + TZ + Search script ───────────────────────────────────────────────
   html += "<script>"
@@ -578,7 +654,12 @@ static String buildPage(bool saved = false) {
           "document.addEventListener('click',function(e){"
           "if(!e.target.closest('#srchwrap')&&!e.target.closest('.tzsearch'))closeSearch();});"
 
-          // Fetch TZ offset from timeapi.io
+          // "UTC−8" or "UTC+5:30", as utcLabel() writes it
+          "function fmtOff(o){"
+          "var m=Math.abs(o)/60,s='UTC'+(o<0?'\\u2212':'+')+Math.floor(m/60);"
+          "if(m%60)s+=':'+('0'+m%60).slice(-2);return s;}"
+
+          // Fetch TZ offset from timeapi.io; also shown as the override row's "Received"
           "function fetchTZ(lat,lon,slot){"
           "var fi=document.getElementById('f'+slot);"
           "fi.textContent='...';"
@@ -588,9 +669,9 @@ static String buildPage(bool saved = false) {
           "if(d&&d.currentUtcOffset&&d.currentUtcOffset.seconds!==undefined){"
           "var off=d.currentUtcOffset.seconds;"
           "document.getElementById(slot===1?'tz1':'tz2').value=off;"
-          "var h=Math.abs(Math.round(off/3600));"
-          "var sign=off>=0?'+':'-';"
-          "fi.textContent='UTC'+sign+h;}"
+          "fi.textContent=fmtOff(off);"
+          "document.getElementById('r'+slot).textContent=fmtOff(off);"
+          "if(!document.getElementById('ov'+slot).checked)document.getElementById('ovs'+slot).value=off;}"  // box off: list follows
           "else{fi.textContent='?';}"
           "}).catch(function(){fi.textContent='err';});}"
 
@@ -681,7 +762,7 @@ static String buildPage(bool saved = false) {
           "</script>";
 
   html += "</main></body></html>";
-  return html;
+  sendPart(html);
 }
 
 // ===========================================================================
@@ -694,7 +775,10 @@ static void handleRoot() {
   // boxes open filled; once it's cached (or typed) these return straight away.
   lookupCityName(false);
   lookupCityName(true);
-  server.send(200, "text/html", buildPage(saved));
+  server.setContentLength(CONTENT_LENGTH_UNKNOWN);  // chunked, so the page can go in parts
+  server.send(200, "text/html", "");
+  sendPage(saved);
+  server.sendContent("");  // ends the reply
 }
 
 // True if the submitted coordinate differs from the stored one by half a 4-decimal step or more
@@ -731,6 +815,10 @@ static void handleSave() {
   if (server.hasArg("latitude2")) latitude2 = server.arg("latitude2");
   if (server.hasArg("longitude2")) longitude2 = server.arg("longitude2");
   if (server.hasArg("tzOffset2")) tzOffset2 = server.arg("tzOffset2").toInt();
+  tzOverride = server.hasArg("tzOverride");
+  tzOverride2 = server.hasArg("tzOverride2");
+  if (server.hasArg("tzOverrideOffset")) tzOverrideOffset = server.arg("tzOverrideOffset").toInt();
+  if (server.hasArg("tzOverrideOffset2")) tzOverrideOffset2 = server.arg("tzOverrideOffset2").toInt();
   if (server.hasArg("locationName") && server.hasArg("locationName2")) {
     String name1 = cleanLocationName(server.arg("locationName"));
     String name2 = cleanLocationName(server.arg("locationName2"));

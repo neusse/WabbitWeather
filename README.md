@@ -206,6 +206,11 @@ Install the separate upload tool:
 
 ## Version History
 
+### v1.8.4
+- Time zone override on the settings page, one per location: pick your UTC offset when the time service is wrong (e.g. BC and Alberta after they stopped changing clocks)
+- The settings page shows the offset the time service sent
+- Sunrise, sunset and auto dim follow your time zone, and are no longer an hour off in BC
+
 ### v1.8.3
 - Italian language
 - "Invert colours" on the settings page, for CYD panels that show black as white

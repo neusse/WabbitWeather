@@ -173,8 +173,6 @@ class OW_Weather: public JsonListener {
     void fullDataSet(const char *value);
     void partialDataSet(const char *value);
 
-    uint32_t isoToUnix(const String &iso);
-
   private:
 
     uint16_t hourly_index;

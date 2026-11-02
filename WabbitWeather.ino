@@ -20,7 +20,7 @@
 #define AA_FONT_SMALL "fonts/NotoSansBold15"  // 15 point sans serif bold
 #define AA_FONT_LARGE "fonts/NotoSansBold36"  // 36 point sans serif bold
 
-#define WABBIT_VERSION "Version: 1.8.3"
+#define WABBIT_VERSION "Version: 1.8.4"
 
 /***************************************************************************************
 **                          Load the libraries and settings
@@ -896,8 +896,8 @@ void drawForecastDetail(uint16_t x, uint16_t y, uint8_t dayIndex) {
 
   if (dayIndex >= MAX_DAYS) return;
 
-  //String day = shortDOW[weekday(toLocal(daily->dt[dayIndex]))];
-  String day = shortDOW[weekday(daily->dt[dayIndex])];
+  // dt is the day's local midnight in UTC; +12h so an hour's offset difference can't change the day
+  String day = shortDOW[weekday(toLocal(daily->dt[dayIndex]) + 12 * 3600)];
   day.toUpperCase();
 
   tft.setTextDatum(BC_DATUM);
@@ -1035,17 +1035,17 @@ void drawAstronomy() {
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
   tft.setTextPadding(tft.textWidth("8:88 "));
 
-  String rising = strTime(current->sunrise) + " ";
+  String rising = strTime(toLocal(current->sunrise)) + " ";
   int dt = rightOffset(rising, ":");
   tft.drawString(rising, 55 + dt, 290);
 
-  sunrise = daySeconds(current->sunrise);
+  sunrise = daySeconds(toLocal(current->sunrise));  // auto-dim compares against local time
 
-  String setting = strTime(current->sunset) + " ";
+  String setting = strTime(toLocal(current->sunset)) + " ";
   dt = rightOffset(setting, ":");
   tft.drawString(setting, 55 + dt, 305);
 
-  sunset = daySeconds(current->sunset);
+  sunset = daySeconds(toLocal(current->sunset));
 
   tft.setTextDatum(BC_DATUM);
   tft.setTextColor(astrologyColour, TFT_BLACK);

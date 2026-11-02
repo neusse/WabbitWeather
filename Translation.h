@@ -89,7 +89,8 @@ const char creditWabbit[] = "Open-Meteo by: Wabbitguy";
 // ── WebConfig UI strings ──────────────────────────────────────────────────────
 
 // Page / header
-const char wcSaved[] = "&#10003; Settings saved and applied.";
+const char wcSaved[] = "&#10003; Settings updated and saved.";  // popup after Update
+const char wcOkBtn[] = "OK";  // closes that popup
 
 // WiFi reset modal
 const char wcWifiResetTitle[] = "&#x26A0; Reset WiFi?";
@@ -104,6 +105,8 @@ const char wcWifiResetHotspot[] = "Rebooting. Connect to the <strong>" HOSTNAME 
 // Section headings
 const char wcSecLocation[] = "Location";
 const char wcLocName[] = "name on display";  // after "TZ1 " on the settings page
+const char wcTzOverride[] = "time zone override";  // after "TZ1 " on the settings page
+const char wcTzReceived[] = "Received";  // as in "Received: UTC−8"
 const char wcSecDisplay[] = "Display Settings";
 const char wcSecTempColours[] = "Temperature Threshold Colours";
 const char wcSecPrecipColours[] = "Precipitation Threshold Colours";
@@ -153,7 +156,7 @@ const char wcMidPOPColour[] = "Mid POP colour";
 const char wcLowPOPColour[] = "Low POP colour";
 
 // Buttons
-const char wcSaveBtn[] = "Update &amp; Save";
+const char wcSaveBtn[] = "Update";
 const char wcCancelBtn[] = "Cancel";
 
 // ── WMO weather code → display text ──────────────────────────────────────────
@@ -264,7 +267,8 @@ const char creditOriginal[] = "Original: blog.squix.org";
 const char creditBodmer[] = "Adapté par: Bodmer";
 const char creditWabbit[] = "Open-Meteo par: Wabbitguy";
 
-const char wcSaved[] = "&#10003; Paramètres enregistrés.";
+const char wcSaved[] = "&#10003; Paramètres mis à jour et enregistrés.";  // popup after Update
+const char wcOkBtn[] = "OK";  // closes that popup
 const char wcWifiResetTitle[] = "&#x26A0; Réinitialiser WiFi ?";
 const char wcWifiResetBody[] = "Efface les identifiants WiFi et redémarre en mode configuration.";
 const char wcWifiResetYes[] = "Oui, réinitialiser";
@@ -274,6 +278,8 @@ const char wcWifiResetting[] = "Réinitialisation WiFi...";
 const char wcWifiResetHotspot[] = "Redémarrage. Connectez-vous au hotspot <strong>" HOSTNAME "</strong>.";
 const char wcSecLocation[] = "Emplacement";
 const char wcLocName[] = "nom affiché";  // after "TZ1 " on the settings page
+const char wcTzOverride[] = "fuseau horaire manuel";  // after "TZ1 " on the settings page
+const char wcTzReceived[] = "Reçu";  // as in "Received: UTC−8"
 const char wcSecDisplay[] = "Paramètres d'affichage";
 const char wcSecTempColours[] = "Couleurs de température";
 const char wcSecPrecipColours[] = "Couleurs de précipitation";
@@ -313,7 +319,7 @@ const char wcLowPrecipThresh[] = "Seuil précipitation basse (%)";
 const char wcHighPOPColour[] = "Couleur POP haute";
 const char wcMidPOPColour[] = "Couleur POP moyenne";
 const char wcLowPOPColour[] = "Couleur POP basse";
-const char wcSaveBtn[] = "Enregistrer";
+const char wcSaveBtn[] = "Mettre à jour";
 const char wcCancelBtn[] = "Annuler";
 
 inline const char* wmoDescription(uint16_t id) {
@@ -423,7 +429,8 @@ const char creditOriginal[] = "Original: blog.squix.org";
 const char creditBodmer[] = "Angepasst von: Bodmer";
 const char creditWabbit[] = "Open-Meteo von: Wabbitguy";
 
-const char wcSaved[] = "&#10003; Einstellungen gespeichert.";
+const char wcSaved[] = "&#10003; Einstellungen aktualisiert und gespeichert.";  // popup after Update
+const char wcOkBtn[] = "OK";  // closes that popup
 const char wcWifiResetTitle[] = "&#x26A0; WiFi zurücksetzen?";
 const char wcWifiResetBody[] = "Löscht WLAN-Daten und startet im Konfigurationsmodus neu.";
 const char wcWifiResetYes[] = "Ja, zurücksetzen";
@@ -433,6 +440,8 @@ const char wcWifiResetting[] = "WiFi wird zurückgesetzt...";
 const char wcWifiResetHotspot[] = "Neustart. Verbinde mit dem Hotspot <strong>" HOSTNAME "</strong>.";
 const char wcSecLocation[] = "Standort";
 const char wcLocName[] = "Anzeigename";  // after "TZ1 " on the settings page
+const char wcTzOverride[] = "Zeitzone manuell";  // after "TZ1 " on the settings page
+const char wcTzReceived[] = "Empfangen";  // as in "Received: UTC−8"
 const char wcSecDisplay[] = "Anzeigeeinstellungen";
 const char wcSecTempColours[] = "Temperaturfarbschwellen";
 const char wcSecPrecipColours[] = "Niederschlagsfarbschwellen";
@@ -472,7 +481,7 @@ const char wcLowPrecipThresh[] = "Niedrige Niederschlagsschwelle (%)";
 const char wcHighPOPColour[] = "Farbe hoher POP";
 const char wcMidPOPColour[] = "Farbe mittlerer POP";
 const char wcLowPOPColour[] = "Farbe niedriger POP";
-const char wcSaveBtn[] = "Speichern";
+const char wcSaveBtn[] = "Aktualisieren";
 const char wcCancelBtn[] = "Abbrechen";
 
 inline const char* wmoDescription(uint16_t id) {
@@ -581,7 +590,8 @@ const char creditOriginal[] = "Original: blog.squix.org";
 const char creditBodmer[] = "Adaptado por: Bodmer";
 const char creditWabbit[] = "Open-Meteo por: Wabbitguy";
 
-const char wcSaved[] = "&#10003; Configuración guardada.";
+const char wcSaved[] = "&#10003; Configuración actualizada y guardada.";  // popup after Update
+const char wcOkBtn[] = "Aceptar";  // closes that popup
 const char wcWifiResetTitle[] = "&#x26A0; ¿Restablecer WiFi?";
 const char wcWifiResetBody[] = "Borra las credenciales WiFi y reinicia en modo configuración.";
 const char wcWifiResetYes[] = "Sí, restablecer";
@@ -591,6 +601,8 @@ const char wcWifiResetting[] = "Restableciendo WiFi...";
 const char wcWifiResetHotspot[] = "Reiniciando. Conéctese al hotspot <strong>" HOSTNAME "</strong>.";
 const char wcSecLocation[] = "Ubicación";
 const char wcLocName[] = "nombre en pantalla";  // after "TZ1 " on the settings page
+const char wcTzOverride[] = "zona horaria manual";  // after "TZ1 " on the settings page
+const char wcTzReceived[] = "Recibido";  // as in "Received: UTC−8"
 const char wcSecDisplay[] = "Configuración de pantalla";
 const char wcSecTempColours[] = "Colores de temperatura";
 const char wcSecPrecipColours[] = "Colores de precipitación";
@@ -630,7 +642,7 @@ const char wcLowPrecipThresh[] = "Umbral precipitación baja (%)";
 const char wcHighPOPColour[] = "Color POP alto";
 const char wcMidPOPColour[] = "Color POP medio";
 const char wcLowPOPColour[] = "Color POP bajo";
-const char wcSaveBtn[] = "Guardar";
+const char wcSaveBtn[] = "Actualizar";
 const char wcCancelBtn[] = "Cancelar";
 
 inline const char* wmoDescription(uint16_t id) {
@@ -740,7 +752,8 @@ const char creditOriginal[] = "Origineel: blog.squix.org";
 const char creditBodmer[] = "Aangepast door: Bodmer";
 const char creditWabbit[] = "Open-Meteo door: Wabbitguy";
 
-const char wcSaved[] = "&#10003; Instellingen opgeslagen.";
+const char wcSaved[] = "&#10003; Instellingen bijgewerkt en opgeslagen.";  // popup after Update
+const char wcOkBtn[] = "OK";  // closes that popup
 const char wcWifiResetTitle[] = "&#x26A0; WiFi resetten?";
 const char wcWifiResetBody[] = "Verwijdert WiFi-gegevens en herstart in configuratiemodus.";
 const char wcWifiResetYes[] = "Ja, resetten";
@@ -750,6 +763,8 @@ const char wcWifiResetting[] = "WiFi wordt gereset...";
 const char wcWifiResetHotspot[] = "Herstarten. Verbind met het <strong>" HOSTNAME "</strong> hotspot.";
 const char wcSecLocation[] = "Locatie";
 const char wcLocName[] = "naam op scherm";  // after "TZ1 " on the settings page
+const char wcTzOverride[] = "tijdzone handmatig";  // after "TZ1 " on the settings page
+const char wcTzReceived[] = "Ontvangen";  // as in "Received: UTC−8"
 const char wcSecDisplay[] = "Weergave-instellingen";
 const char wcSecTempColours[] = "Temperatuurdrempelkleuren";
 const char wcSecPrecipColours[] = "Neerslagdrempelkleuren";
@@ -789,7 +804,7 @@ const char wcLowPrecipThresh[] = "Lage neerslagdrempel (%)";
 const char wcHighPOPColour[] = "Kleur hoge POP";
 const char wcMidPOPColour[] = "Kleur gemiddelde POP";
 const char wcLowPOPColour[] = "Kleur lage POP";
-const char wcSaveBtn[] = "Opslaan";
+const char wcSaveBtn[] = "Bijwerken";
 const char wcCancelBtn[] = "Annuleren";
 
 inline const char* wmoDescription(uint16_t id) {
@@ -898,7 +913,8 @@ const char creditOriginal[]  = "Original: blog.squix.org";
 const char creditBodmer[]    = "Adaptado por: Bodmer";
 const char creditWabbit[]    = "Open-Meteo por: Wabbitguy";
 
-const char wcSaved[]            = "&#10003; Configurações salvas.";
+const char wcSaved[]            = "&#10003; Configurações atualizadas e salvas.";  // popup after Update
+const char wcOkBtn[]            = "OK";  // closes that popup
 const char wcWifiResetTitle[]   = "&#x26A0; Redefinir WiFi?";
 const char wcWifiResetBody[]    = "Apaga credenciais WiFi e reinicia no modo configuração.";
 const char wcWifiResetYes[]     = "Sim, redefinir";
@@ -908,6 +924,8 @@ const char wcWifiResetting[]    = "Redefinindo WiFi...";
 const char wcWifiResetHotspot[] = "Reiniciando. Conecte-se ao hotspot <strong>" HOSTNAME "</strong>.";
 const char wcSecLocation[]      = "Localização";
 const char wcLocName[]          = "nome na tela";  // after "TZ1 " on the settings page
+const char wcTzOverride[]       = "fuso horário manual";  // after "TZ1 " on the settings page
+const char wcTzReceived[]       = "Recebido";  // as in "Received: UTC−8"
 const char wcSecDisplay[]       = "Configurações de exibição";
 const char wcSecTempColours[]   = "Cores de temperatura";
 const char wcSecPrecipColours[] = "Cores de precipitação";
@@ -947,7 +965,7 @@ const char wcLowPrecipThresh[]  = "Limite precipitação baixa (%)";
 const char wcHighPOPColour[]    = "Cor POP alto";
 const char wcMidPOPColour[]     = "Cor POP médio";
 const char wcLowPOPColour[]     = "Cor POP baixo";
-const char wcSaveBtn[]          = "Salvar";
+const char wcSaveBtn[]          = "Atualizar";
 const char wcCancelBtn[]        = "Cancelar";
 
 inline const char* wmoDescription(uint16_t id) {
@@ -1057,7 +1075,8 @@ const char creditOriginal[]  = "Orijinal: blog.squix.org";
 const char creditBodmer[]    = "Uyarlayan: Bodmer";
 const char creditWabbit[]    = "Open-Meteo: Wabbitguy";
 
-const char wcSaved[]            = "&#10003; Ayarlar kaydedildi.";
+const char wcSaved[]            = "&#10003; Ayarlar güncellendi ve kaydedildi.";  // popup after Update
+const char wcOkBtn[]            = "Tamam";  // closes that popup
 const char wcWifiResetTitle[]   = "&#x26A0; WiFi Sıfırla?";
 const char wcWifiResetBody[]    = "WiFi bilgilerini siler ve yapılandırma modunda yeniden başlatır.";
 const char wcWifiResetYes[]     = "Evet, sıfırla";
@@ -1067,6 +1086,8 @@ const char wcWifiResetting[]    = "WiFi sıfırlanıyor...";
 const char wcWifiResetHotspot[] = "Yeniden başlatılıyor. <strong>" HOSTNAME "</strong> hotspotuna bağlanın.";
 const char wcSecLocation[]      = "Konum";
 const char wcLocName[]          = "ekranda görünen ad";  // after "TZ1 " on the settings page
+const char wcTzOverride[]       = "saat dilimi elle";  // after "TZ1 " on the settings page
+const char wcTzReceived[]       = "Alınan";  // as in "Received: UTC−8"
 const char wcSecDisplay[]       = "Ekran Ayarları";
 const char wcSecTempColours[]   = "Sıcaklık Eşik Renkleri";
 const char wcSecPrecipColours[] = "Yağış Eşik Renkleri";
@@ -1106,7 +1127,7 @@ const char wcLowPrecipThresh[]  = "Düşük yağış eşiği (%)";
 const char wcHighPOPColour[]    = "Yüksek YOO rengi";
 const char wcMidPOPColour[]     = "Orta YOO rengi";
 const char wcLowPOPColour[]     = "Düşük YOO rengi";
-const char wcSaveBtn[]          = "Kaydet";
+const char wcSaveBtn[]          = "Güncelle";
 const char wcCancelBtn[]        = "İptal";
 
 inline const char* wmoDescription(uint16_t id) {
@@ -1216,7 +1237,8 @@ const char creditOriginal[] = "Originale: blog.squix.org";
 const char creditBodmer[] = "Adattato da: Bodmer";
 const char creditWabbit[] = "Open-Meteo da: Wabbitguy";
 
-const char wcSaved[] = "&#10003; Impostazioni salvate e applicate.";
+const char wcSaved[] = "&#10003; Impostazioni aggiornate e salvate.";  // popup after Update
+const char wcOkBtn[] = "OK";  // closes that popup
 const char wcWifiResetTitle[] = "&#x26A0; Reimpostare il WiFi?";
 const char wcWifiResetBody[] = "Cancella le credenziali WiFi salvate e riavvia in modalità "
                                "configurazione. Riconnettiti tramite l'hotspot " HOSTNAME ".";
@@ -1227,6 +1249,8 @@ const char wcWifiResetting[] = "Reimpostazione WiFi...";
 const char wcWifiResetHotspot[] = "Riavvio in corso. Connettiti all'hotspot <strong>" HOSTNAME "</strong>.";
 const char wcSecLocation[] = "Posizione";
 const char wcLocName[] = "nome sul display";  // after "TZ1 " on the settings page
+const char wcTzOverride[] = "fuso orario manuale";  // after "TZ1 " on the settings page
+const char wcTzReceived[] = "Ricevuto";  // as in "Received: UTC−8"
 const char wcSecDisplay[] = "Impostazioni display";
 const char wcSecTempColours[] = "Colori della temperatura";
 const char wcSecPrecipColours[] = "Colori delle precipitazioni";
@@ -1266,7 +1290,7 @@ const char wcLowPrecipThresh[] = "Soglia precipitazioni bassa (%)";
 const char wcHighPOPColour[] = "Colore POP alta";
 const char wcMidPOPColour[] = "Colore POP media";
 const char wcLowPOPColour[] = "Colore POP bassa";
-const char wcSaveBtn[] = "Aggiorna e salva";
+const char wcSaveBtn[] = "Aggiorna";
 const char wcCancelBtn[] = "Annulla";
 
 inline const char* wmoDescription(uint16_t id) {

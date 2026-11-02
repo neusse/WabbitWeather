@@ -54,13 +54,19 @@ bool     rebooted       = true;
 
 //====================================================================================
 //                         Local time helper: toLocal(utc) adds tzOffset
+//  (or the web page's override offset, when that location's override box is ticked)
 //====================================================================================
 extern int32_t tzOffset;
 extern int32_t tzOffset2;
+extern bool    tzOverride;
+extern bool    tzOverride2;
+extern int32_t tzOverrideOffset;
+extern int32_t tzOverrideOffset2;
 extern bool    altLocation;
 
 inline time_t toLocal(time_t utcTime) {
-  return utcTime + (altLocation ? tzOffset2 : tzOffset);
+  if (altLocation) return utcTime + (tzOverride2 ? tzOverrideOffset2 : tzOffset2);
+  return utcTime + (tzOverride ? tzOverrideOffset : tzOffset);
 }
 
 //====================================================================================
