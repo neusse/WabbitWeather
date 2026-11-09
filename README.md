@@ -61,11 +61,13 @@ Access the configuration page at **http://wabbitweather.local** (or the device I
 
 Set up to two locations using the interactive map. Click or drag the pin, or type a city name in the search box. The timezone offset is detected automatically from the coordinates — no manual timezone selection needed.
 
-<img width="640" height="508" alt="Location-1" src="https://github.com/user-attachments/assets/a3540f7d-b0e8-4b42-8dcd-3c6476fe1c09" />
+<img width="640" alt="Display_Settings" src="https://github.com/user-attachments/assets/e6aac755-a5a1-4e78-9a05-ee6d69c01239" />
 
 TZ1 is your primary location. TZ2 is an alternate location (family in another city, a vacation property, etc.). Tap the weather icon area on the display to switch between them.
 
 Under the map, **TZ1 name on display** and **TZ2 name on display** show the name the display uses for each location. Moving a pin fills in the town name from OpenStreetMap; change it to whatever you like. Handy when OpenStreetMap picks the neighbouring town — its town lines don't always match your mailing address.
+
+Note: some services may take a while to update their database for recent timezone changes, you can override those. You'll see what the service provided for the offset, and you can enter in your own offset to correct it (until such time as they update their database).
 
 ### Display Settings
 
