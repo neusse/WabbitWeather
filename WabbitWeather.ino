@@ -20,7 +20,7 @@
 #define AA_FONT_SMALL "fonts/NotoSansBold15"  // 15 point sans serif bold
 #define AA_FONT_LARGE "fonts/NotoSansBold36"  // 36 point sans serif bold
 
-#define WABBIT_VERSION "Version: 1.8.4"
+#define WABBIT_VERSION "Version: 1.8.5"
 
 /***************************************************************************************
 **                          Load the libraries and settings
@@ -231,7 +231,11 @@ void setup() {
   WiFiManager wm;
   wm.setAPCallback(configModeCallback);
   wm.setHostname(HOSTNAME);  // name shown in the router's device list
-  wm.autoConnect(HOSTNAME);  // the Wi-Fi setup hotspot's name
+  wm.setConfigPortalTimeout(600);  // idle 10 min, reboot and retry saved WiFi (router slow after power cut)
+  if (!wm.autoConnect(HOSTNAME)) {  // the Wi-Fi setup hotspot's name
+    delay(1000);
+    ESP.restart();
+  }
   if (portalShown) {  // clear the Wi-Fi setup screen
     apScreenStop = true;  // wait for apScreenTask() to finish drawing first
     while (apScreenRunning) delay(10);

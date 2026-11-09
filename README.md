@@ -206,6 +206,9 @@ Install the separate upload tool:
 
 ## Version History
 
+### v1.8.5
+- After a power cut it no longer needs unplugging: if the router is still booting, the Wi-Fi setup hotspot closes after 10 minutes and it retries your saved Wi-Fi
+
 ### v1.8.4
 - Time zone override on the settings page, one per location: pick your UTC offset when the time service is wrong (e.g. BC and Alberta after they stopped changing clocks)
 - The settings page shows the offset the time service sent

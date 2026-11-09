@@ -74,7 +74,7 @@ void loadConfig() {
     return;
   }
 
-  File f = LittleFS.open(CONFIG_FILE, "r");
+  fs::File f = LittleFS.open(CONFIG_FILE, "r");
   if (!f) {
     Serial.println("WebConfig: failed to open config");
     return;
@@ -133,7 +133,7 @@ void loadConfig() {
 }
 
 void saveConfig() {
-  File f = LittleFS.open(CONFIG_FILE, "w");
+  fs::File f = LittleFS.open(CONFIG_FILE, "w");
   if (!f) {
     Serial.println("WebConfig: failed to save config");
     return;
